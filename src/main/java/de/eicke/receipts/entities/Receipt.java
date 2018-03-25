@@ -22,6 +22,17 @@ public class Receipt {
 	
 	private CostCategory category;
 	
+	public Receipt() {
+		
+	}
+	public Receipt(Date receiptDate, String description, double amount, double VAT, CostCategory category) {
+		this.receiptDate = receiptDate;
+		this.description = description;
+		this.amount = amount;
+		this.VAT = VAT;
+		
+	}
+	
 	public String getId() {
 		return id;
 	}
@@ -69,7 +80,4 @@ public class Receipt {
 	public void setCategory(CostCategory category) {
 		this.category = category;
 	}
-
-	
-	
 }
