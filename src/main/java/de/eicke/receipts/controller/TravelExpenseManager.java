@@ -43,7 +43,7 @@ public class TravelExpenseManager {
 	public Optional<TravelExpense> findTravelExpenseByTravelId(String travelId) {
 		Optional<TravelExpense> expense = repository.findByTravelId(travelId);
 		if (!expense.isPresent()) {
-			logger.info("TravelExpenses with Travel-ID {0} not found!", travelId); 
+			logger.info("TravelExpenses with Travel-ID {} not found!", travelId); 
 		}
 		return expense;
 	} 

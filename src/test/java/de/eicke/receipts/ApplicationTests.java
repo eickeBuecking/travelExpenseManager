@@ -3,15 +3,13 @@ package de.eicke.receipts;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 import java.util.Date;
 import java.util.Optional;
 
@@ -28,7 +26,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -143,10 +140,25 @@ public class ApplicationTests {
 	@Test
 	public void testGetByIdViaRest() throws Exception {
 		TravelExpense expense = createExpense();
-		manager.registerTravelExpense(expense);
+		String id = manager.registerTravelExpense(expense);
 		
-		MvcResult result = mockMvc.perform(get("/travelExpenses").with(user("joe"))).andExpect(status().is2xxSuccessful()).andReturn();
-		//TODO: Check content.
+		mockMvc.perform(get("/travelExpenses/" + id).with(user("joe")))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(jsonPath("$.id", is(id))); 
 	}
+	
+	@Test
+	public void testGetExpensesByTravelIdViaRest() throws Exception {
+		TravelExpense expense = createExpense();
+		String id = manager.registerTravelExpense(expense);
+		String travelId = expense.getTravelId();
+		
+		
+		mockMvc.perform(get("/travelExpenses?travelId=" + travelId).with(user("joe")))
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(jsonPath("$.travelId", is(travelId)))
+				.andExpect(jsonPath("$.id", is(id))); 
+	}
+	
 
 }

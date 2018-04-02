@@ -1,4 +1,4 @@
-package de.eicke.receipts;
+package de.eicke.receipts.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import de.eicke.exceptions.ErrorMessage;
 import de.eicke.exceptions.TravelManagerException;
-import de.eicke.receipts.controller.TravelExpenseManager;
 import de.eicke.receipts.entities.TravelExpense;
 
 @RestController
@@ -64,7 +64,19 @@ public class TravelExpenseController {
 	}
 	
 	@RequestMapping(path=path + "/{someId}", method=RequestMethod.GET)
-	public ResponseEntity<TravelExpense> getTravelById(@PathVariable(value="someId") final String travelId) {
+	public ResponseEntity<TravelExpense> getTravelExpenseById(@PathVariable(value="someId") final String expenseId) {
+		Optional<TravelExpense> expense = manager.getTravelExpenseById(expenseId);
+		if (!expense.isPresent()) {
+			ResponseEntity<TravelExpense> result = new ResponseEntity<TravelExpense>(HttpStatus.NOT_FOUND);
+			return result;
+		} else {
+			ResponseEntity<TravelExpense> result = new ResponseEntity<TravelExpense>(expense.get(), HttpStatus.OK);
+			return result;
+		}
+	}
+	
+	@RequestMapping(path=path, method=RequestMethod.GET, params="travelId")
+	public ResponseEntity<TravelExpense> getTravelExpensesByTravelId(@RequestParam(value="travelId") final String travelId) {
 		Optional<TravelExpense> expense = manager.findTravelExpenseByTravelId(travelId);
 		if (!expense.isPresent()) {
 			ResponseEntity<TravelExpense> result = new ResponseEntity<TravelExpense>(HttpStatus.NOT_FOUND);
