@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
  
-    private static final String RESOURCE_ID = "my_rest_api";
+    private static final String RESOURCE_ID = "travelmanager-service";
      
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
